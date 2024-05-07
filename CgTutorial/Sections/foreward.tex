@@ -1,0 +1,28 @@
+\documentclass[../main.tex]{subfiles}
+\graphicspath{{\subfix{../Images/}}}
+
+\begin{document}
+
+\chapter*{Foreword}
+
+Real-time computer graphics hardware is undergoing a major transition, from supporting a few fixed algorithms to being fully programmable. At the same time, the performance of graphics processors (GPUs) is increasing at a rapid rate—even greater than that of CPUs—because GPUs can effectively exploit the enormous parallelism available in graphics computations. These improvements in GPU flexibility and performance are likely to continue in the future, and will allow developers to write increasingly sophisticated and diverse programs that execute on the GPU.
+
+Until recently, most GPU programs were written in assembly language, but history has shown that developers make the most creative and effective use of programmable hardware when they have the opportunity to program in a high-level language. Our goal in designing Cg was to provide developers with the same flexibility and performance available in assembly language, but with the expressiveness and ease-of-use of a high-level language. The C language has demonstrated enormous success in achieving these goals on the CPU, and so we chose C's syntax and philosophy as the starting point for defining Cg. In particular, this choice gave us confidence that the Cg language would be able to implement any GPU program, rather than restricting developers to a predefined framework designed specifically for shading computations.
+
+Cg also builds on ideas and lessons learned from earlier work in computer graphics. My personal interest in programmable graphics hardware was inspired by the PixelFlow project at the University of North Carolina and, in particular, by the shading language compiler that Marc Olano and others built for PixelFlow. In many respects, the most direct predecessor to Cg was the real-time programmable shading system that Kekoa Proudfoot, Pat Hanrahan, I, and others built at Stanford for single-chip GPUs. The knowledge that we acquired from building the Stanford system was crucial to the design of Cg. Offline movie rendering has relied on programmable shading for much longer. The RenderMan language designed by Pat Hanrahan at Pixar served as a major source of inspiration for Cg, particularly in the choice of Cg's built-in functions.
+
+The desire to create one GPU programming language that would be widely supported for both the OpenGL and Direct3D APIs led us to collaborate with Microsoft on the design of Cg. Microsoft's implementation of the language is called HLSL, and it is shipped as part of DirectX 9. At Microsoft, Craig Peeper and Loren McQuade were particularly influential in the design of the language. The examples in this book work equally well with HLSL and Cg.
+
+Designing and implementing Cg in less than a year was possible only because we had a large and highly talented team of people working together. Two individuals made particularly unique contributions. Steve Glanville's extensive compiler and language expertise was crucial to the Cg design effort, and he implemented most of the front end of the first version of the Cg compiler. Kurt Akeley's experience as a system designer was invaluable throughout the project.
+
+In this book, Randy and Mark have assembled a series of Cg tutorials that introduce Cg while simultaneously describing many of the real-time shading techniques supported by modern GPUs. By integrating these two sets of concepts within one collection of tutorials, this book enables you to experience the fun of writing and experimenting with your own GPU programs. Enjoy the journey!
+
+Bill Mark
+
+Cg Language Lead Designer
+
+Assistant Professor
+
+The University of Texas at Austin
+
+\end{document}

@@ -1,0 +1,95 @@
+\documentclass[../main.tex]{subfiles}
+\graphicspath{{\subfix{../Images/}}}
+
+\begin{document}
+
+\chapter*{Preface}
+
+Once upon a time, real-time computer graphics was all about vertices, triangles, and pixels. In fact, it still is. However, the level at which a programmer controls the processing and appearance of these graphics primitives has advanced considerably. Until a few years ago, programmers had to rely on the CPU to process all the transformation and rasterization algorithms needed to produce computer-generated images. Over time, hardware engineers executed these algorithms via specialized, high-performance 3D graphics hardware. Rather than implement the algorithms directly, programmers learned to access the hardware-provided graphics functionality through standard 3D programming interfaces, such as OpenGL (developed by Silicon Graphics [SGI]) and Direct3D (developed by Microsoft). At first, such costly 3D graphics hardware appeared only in high-priced UNIX workstations and flight simulators. Now, through the miracle of Moore's Law, the benefits of graphics hardware acceleration have been bestowed on low-cost PCs and game consoles.
+
+Although the performance gained by employing dedicated graphics hardware to execute the brute-force tasks of transforming vertices, rasterizing triangles, and updating pixels far exceeded the performance possible just with CPU programming, real-time 3D programmers gave up a considerable measure of control in exchange for this speed. Developers were limited to using a fixed-function palette of graphics operations that the hardware could handle. Sometimes a skilled and dedicated programmer could coax the graphics programming interface and hardware to accomplish something beyond the ordinary, but this was usually hard, time-consuming work.
+
+While graphics hardware engineers were advancing the real-time performance of their specialized pixel-pushing hardware, off-line computer graphics software packages such as Pixar's PhotoRealistic RenderMan were changing the look of movies and television with amazing computer-generated special effects. The pre-recorded nature of movies and most television content makes these media well suited for offline rendering. Computer-generated images for film and video are not rendered in real time but instead carefully constructed frame by frame in hours, days, or weeks using standard general-purpose CPUs. The advantage of using general-purpose CPUs is that rather than settle for hard-wired hardware algorithms, programmers and artists can use the CPU to create any effect they might imagine. What these so-called offline rendering systems lack in relative speed, they make up in rendering quality and realism.
+
+The flexibility and generality of offline rendering systems are the key features that have been missing from preceding generations of 3D graphics hardware. In other words, what was lost was programmability.
+
+Realizing this limitation, computer graphics architects have designed a new generation of graphics hardware that permits an unprecedented degree of programmability. Now, many of the programmable shading techniques that are employed so successfully in offline rendering can enter the realm of real-time graphics.
+
+Developers of offline rendering systems created a type of specialized computer language known as a shading language to express the graphics operations required to make surfaces look the way artists intend. A shading language for programmable graphics hardware provides the same sort of functionality but in the context of real-time graphics hardware. Graphics programmers and artists benefit from such a high-level programming language in much the same way that conventional programmers do from C++ or Java. Using a high-level language for graphics hardware automates the process of translating the programmer's intent into a form that the graphics hardware can execute.
+
+This book is about Cg, the premier language for programmable graphics hardware. NVIDIA developed Cg in close collaboration with Microsoft. Cg is the most portable and productive way for you to unleash the power within programmable graphics hardware. This book is a tutorial to teach you how to write Cg programs.
+
+\section*{Our Intended Audience}
+
+We tried to write this book in a way that makes it valuable to both novices and advanced readers. If you're new to the world of programmable graphics, this book should give you a firm foundation on which to build. If you encounter a word or concept that is foreign to you and not sufficiently explained, consult the "Further Reading" section at the end of each chapter.
+
+The main audience for this book is 3D game and application programmers, managers of such projects, real-time 3D artists, and computer graphics students—or anyone else interested in learning about the state of the art in real-time rendering. You do not have to be an experienced programmer to learn Cg from this book, though you should be relatively familiar with programming language concepts. If you are familiar with C or one of its derivatives, such as C++ or Java, Cg will be very approachable. Cg programs are relatively short, often less than a page, so even an artist or novice programmer can get the gist of Cg from this tutorial and learn to write interesting Cg programs.
+
+Computer graphics programming involves math. Understanding basic algebra and trigonometry will help you appreciate several sections. You should also be familiar with the math behind basic computer graphics vertex transformation and lighting models. You do not need to know OpenGL or Direct3D, but familiarity with either programming interface is very helpful. All of the Cg examples described work with either OpenGL or Direct3D unless otherwise noted. Some examples that require advanced Cg functionality may not work on older graphics processors.
+
+\section*{The Book's Structure}
+
+Chapter 1 introduces Cg. Each chapter that follows is a short tutorial that presents specific Cg concepts and techniques. The tutorials build upon each other, so we recommend reading the chapters in order.
+
+\FloatBarrier
+\begin{itemize}
+\item Chapter 1 lays out the foundations of Cg and real-time programmable graphics hardware.
+\item Chapter 2 presents the simplest Cg programs.
+\item Chapter 3 explains parameters, textures, and expressions.
+\item Chapter 4 shows how to transform vertices.
+\item Chapter 5 covers the implementation of lighting models with Cg.
+\item Chapter 6 describes how to animate and morph models with Cg vertex programs.
+\item Chapter 7 explains environment mapping with Cg.
+\item Chapter 8 shows how to implement bump mapping.
+\item Chapter 9 discusses a number of advanced topics: fog, cartoon shading, projected spotlights, shadow mapping, and compositing.
+\item Chapter 10 explains the set of currently available Cg vertex and fragment profiles, and provides advice for improving the performance of Cg programs.
+\end{itemize}
+\FloatBarrier
+
+This book gets you started but does not contain everything you will eventually want to know about Cg. This tutorial complements other documentation (such as the Cg Toolkit User's Manual: A Developer's Guide to Programmable Graphics) included with the Cg Toolkit. Please consult the user's manual and other Cg documentation for further information.
+
+\section*{Formatting Conventions}
+
+Various elements in this book are specially formatted for easier reading. Code samples are written in the Courier font on a light reverse highlight. Variables and keywords are in \textbf{bold Courier} in the text, and key concepts are \textit{italicized}.
+
+In addition, we use icons to identify special topics, as shown here.
+
+\textbf{Advanced Topic.} Provides extra insight for advanced readers but can be safely glossed over without loss of continuity.
+
+\textbf{Caution.} Indicates a subtlety or concept to be wary of when writing Cg code, to avoid errors.
+
+\textbf{CineFX.} Describes algorithms or features that are available only on the NVIDIA CineFX architecture, or on architectures with similar advanced capabilities.
+
+\textbf{Coding Tip.} Gives guidelines about good coding practices.
+
+\textbf{Performance Tip.} Points out ways to use Cg to achieve optimal GPU performance.
+
+\section*{Trying the Examples}
+
+We've designed the accompanying software framework so that you can get straight to work, even if you don't know anything about OpenGL, Direct3D, C, or C++. Our goal is to isolate the Cg language and allow you to experiment freely with it. Of course, as you move toward starting a real-world application with Cg, your project will probably require some combination of OpenGL, Direct3D, C, and C++.
+
+The accompanying software framework allows you to try out the various Cg examples in the book without worrying about graphics APIs, C, or C++ code. The latest versions of the applications are free to download via the book's companion Web site. The software on the accompanying CD works only on the Windows platform, but versions for Linux and Macintosh systems are available online. Appendix A explains how to download the latest versions of Cg and the accompanying tutorial application.
+
+The tutorial application makes it easy for you to tweak the book's examples, to see how changing a particular Cg example can immediately affect the rendered 3D result. If you can, have a computer that supports Cg nearby to try out the examples. With our software, you just write Cg programs without worrying about the particulars, such as loading 3D models and textures. When you want to know all the gory details, examine the source code, all of which is freely available for download, so you can see how Cg interfaces with C++ and OpenGL or Direct3D. The Cg Toolkit also comes with several simple examples that you can learn from.
+
+The end of each chapter includes suggested exercises that you can work on to explore Cg further.
+
+\section*{Acknowledgments}
+
+We would like to thank our many colleagues at NVIDIA who contributed to Cg and helped us with this book. Bill Mark, Steve Glanville, Mark Kilgard, and Kurt Akeley worked to define the original Cg language in 2001 and 2002. David Kirk, Jensen Huang, Dwight Diercks, Matt Papakipos, and Nick Triantos recognized the need for a high-level language for graphics processors and provided the resources necessary to make Cg a priority and a reality in just over a year's time. Geoff Berry, Michael Bunnell, Chris Dodd, Cass Everitt, Wes Hunt, Craig Kolb, Jayant Kolhe, Rev Lebaredian, Nathan Paymer, Matt Pharr, Doug Rogers, and Chris Wynn developed the Cg compiler, Standard Library, and runtime technology. Sim Dietrich, Ashu Rege, and Sébastien Dominé worked on the original CgFX technology. Chris Seitz gave us a great deal of support in all aspects of the project, helping out in ways that are too numerous to list, but without which this book would not exist. John Spitzer provided the clear foresight, as well as the essential resources, for Cg's development, and gave us the backing from his team to make this book possible. Sanford Russell's contagious motivation helped to get this book started. Cyril Zeller created the handy tutorial framework that accompanies this book and contributed the material for Appendix B. Sim Dietrich shared his knowledge of CgFX in Appendix C. Kevin Bjorke lent his insight by writing the compositing section of the advanced chapter. Teresa Saffaie, Catherine Kilkenny, and Debra Valentine reviewed our writing in an effort to make it clear. Caroline Lie, Spender Yuen, Dana Chan, Huey Nguyen, and Steve Burke lent their creativity and imagination to design and beautify the book's cover, figures, and artwork. NVIDIA's demo team (Curtis Beeson, Dan Burke, Joe Demers, Eugene d'Eon, Steve Giesler, Simon Green, Daniel Hornick, Gary King, Dean Lupini, Hubert Nguyen, Bonnie O'Clair, Alexei Sakhartchouk, and Thant Tessman, under the direction of Mark Daly) contributed several of the color plates.
+
+We are also grateful to Jason Allen, Geoff Berry, Michael Bunnell, Sim Dietrich, Chris Dodd, Gihani Fernando, Simon Green, Larry Gritz, Eric Haines, Wes Hunt, Gary King, Craig Kolb, Jayant Kolhe, Eric Lengyel, Cameron Lewis, Gilliard Lopes, Viet-Tam Luu, Kurt Miller, Tomas Akenine-Möller, Russell Pflughaupt, Matt Pharr, John Spitzer, Nick Triantos, Eric Werness, Matthias Wloka, Cyril Zeller, and our anonymous reviewers for their invaluable comments in the review process. Each set of comments helped to make the book clearer and more accurate.
+
+Microsoft and NVIDIA collaborated to agree on the syntax and semantics of a standard hardware shading language. The DirectX 9 High-Level Shading Language and Cg are the same language because of this effort. We particularly appreciate the work of Craig Peeper, Loren McQuade, Dave Aronson, Anuj Gosalia, Chas Boyd, and Mike Toelle.
+
+We acknowledge the pioneering research on hardware shading languages conducted at the University of North Carolina and Stanford University. Obviously, Pixar's RenderMan Shading Language provided a great deal of inspiration for NVIDIA's efforts to develop a real-time language for mass-market graphics hardware. Ken Perlin's work on the Pixel Stream Editor, not to mention his early Cg compiler testing, deserves recognition as well.
+
+On the hardware front, we acknowledge the fundamental work of Erik Lindholm and Henry Moreton, who architected the user-programmable vertex processing engine inside NVIDIA's GeForce3 GPU. OpenGL's and Direct3D's support for general programmable vertex processing, and hence Cg's support for the same, are indebted to this work.
+
+The hard work and dedication of NVIDIA's architecture, hardware, and software engineers to deliver ever faster and ever more programmable graphics processors was and still is the overriding justification for Cg. We acknowledge the efforts of all the engineers at NVIDIA who strive to make real-time programmable shading a reality for everyone.
+
+We thank the Addison-Wesley production team for making this book a reality. We particularly thank Chris Keane for manhandling our manuscript into shape.
+
+Finally, we thank the thousands of Cg developers for their feedback, bug reports, patience, and enthusiasm.
+
+\end{document}
