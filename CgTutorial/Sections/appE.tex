@@ -1,0 +1,357 @@
+\documentclass[../main.tex]{subfiles}
+\graphicspath{{\subfix{../Images/}}}
+
+\begin{document}
+
+\chapter{Appendix E. Cg Standard Library Functions}
+
+Cg provides a set of built-in functions and predefined structures with binding semantics to simplify GPU programming. These functions are similar in spirit to the C standard library, offering a convenient set of common functions. In many cases, the functions map to a single native GPU instruction, so they are executed very quickly. Of the functions that map to multiple native GPU instructions, you may expect the most useful to become more efficient in the near future.
+
+Although you can write your own versions of specific functions for performance or precision reasons, it is generally wiser to use the Cg Standard Library functions when possible. The Standard Library functions will continue to be optimized for future GPUs; a program written today using these functions will automatically be optimized for the latest architectures at compile time. Additionally, the Standard Library provides a convenient unified interface for both vertex and fragment programs.
+
+This appendix describes the contents of the Cg Standard Library, and is divided into the following five sections:
+
+\begin{itemize}
+\item \textbf{"Mathematical Functions"}
+\item \textbf{"Geometric Functions"}
+\item \textbf{"Texture Map Functions"}
+\item \textbf{"Derivative Functions"}
+\item \textbf{"Debugging Function"}
+\end{itemize}
+
+Where appropriate, functions are overloaded to support scalar and vector variants when the input and output types are the same.
+
+\section{E.1 Mathematical Functions}
+
+Table \ref{table:E-1} lists the mathematical functions that the Cg Standard Library provides. The table includes functions useful for trigonometry, exponentiation, rounding, and vector and matrix manipulations, among others. All functions work on scalars and vectors of all sizes, except where noted.
+
+\FloatBarrier
+\begin{longtable}{ p{3cm} p{9cm}  }
+\caption{Table E-1. Mathematical Functions\label{table:E-1}} \\
+
+Function & Description \\
+\hline
+\endfirsthead
+Function & Description \\
+\hline
+\endhead
+\endfoot
+\endlastfoot
+
+\textbf{abs(x)} & Absolute value of \textbf{x}. \\
+\hline
+\textbf{acos(x)} & Arccosine of \textbf{x} in range [0, $\pi$], \textbf{x} in [–1, 1]. \\
+\hline
+\textbf{all(x)} & Returns \textbf{true} if every component of \textbf{x} is not equal to 0. \newline Returns \textbf{false} otherwise. \\
+\hline
+\textbf{any(x)} & Returns \textbf{true} if any component of \textbf{x} is not equal to 0. \newline Returns \textbf{false} otherwise. \\
+\hline
+\textbf{asin(x)} & Arcsine of \textbf{x} in range [–$\pi$/2, $\pi$/2]; \textbf{x} should be in [–1, 1]. \\
+\hline
+\textbf{atan(x)} & Arctangent of \textbf{x} in range [–$\pi$/2, $\pi$/2]. \\
+\hline
+\textbf{atan2(y, x)} & Arctangent of \textbf{y/x} in range [–$\pi$, $\pi$]. \\
+\hline
+\textbf{ceil(x)} & Smallest integer not less than \textbf{x}. \\
+\hline
+\textbf{clamp(x, a, b)} & \textbf{x} clamped to the range [\textbf{a, b}] as follows: \begin{itemize} \item Returns \textbf{a} if \textbf{x} is less than \textbf{a}. \item Returns \textbf{b} if \textbf{x} is greater than \textbf{b}. \item Returns \textbf{x} otherwise. \end{itemize} \\
+\hline
+\textbf{cos(x)} & Cosine of \textbf{x}. \\
+\hline
+\textbf{cosh(x)} & Hyperbolic cosine of \textbf{x}. \\
+\hline
+\textbf{cross(A, B)} & Cross product of vectors \textbf{A} and \textbf{B}; \newline \textbf{A} and \textbf{B} must be three-component vectors. \\
+\hline
+\textbf{degrees(x)} & Radian-to-degree conversion. \\
+\hline
+\textbf{determinant(M)} & Determinant of matrix \textbf{M}. \\
+\hline
+\textbf{dot(A, B)} & Dot product of vectors \textbf{A} and \textbf{B}. \\
+\hline
+\textbf{exp(x)} & Exponential function $e^x$. \\
+\hline
+\textbf{exp2(x)} & Exponential function $2^x$. \\
+\hline
+\textbf{floor(x)} & Largest integer not greater than \textbf{x}. \\
+\hline
+\textbf{fmod(x, y)} & Remainder of \textbf{x/y}, with the same sign as \textbf{x}. \newline If \textbf{y} is 0, the result is implementation-defined. \\
+\hline
+\textbf{frac(x)} & Fractional part of \textbf{x}. \\
+\hline
+\textbf{frexp(x, out exp)} & Splits \textbf{x} into a normalized fraction in the interval [½, 1), which is returned, and a power of 2, which is stored in \textbf{exp}. \newline If \textbf{x} is 0, both parts of the result are 0. \\
+\hline
+\textbf{isfinite(x)} & Returns \textbf{true} if \textbf{x} is finite. \\
+\hline
+\textbf{isinf(x)} & Returns \textbf{true} if \textbf{x} is infinite. \\
+\hline
+\textbf{isnan(x)} & Returns \textbf{true} if \textbf{x} is NaN (Not a Number). \\
+\hline
+\textbf{ldexp(x, n)} & \textbf{x} $*$ $2^n$. \\
+\hline
+\textbf{lerp(a, b, f)} & Linear interpolation: \newline \textbf{(1 – f )*a + b*f} \newline where \textbf{a} and \textbf{b} are matching vector or scalar types. \textbf{f} can be either a scalar or a vector of the same type as \textbf{a} and \textbf{b}. \\
+\hline
+\textbf{lit(NdotL, NdotH, m)} & Computes lighting coefficients for ambient, diffuse, and specular light contributions. \newline Expects the \textbf{NdotL} parameter to contain \textbf{N} $\cdot$ \textbf{L} and the \textbf{NdotH} parameter to contain \textbf{N} $\cdot$ \textbf{H} . \newline Returns a four-component vector as follows: \begin{itemize} \item The \textbf{x} component of the result vector contains the ambient coefficient, which is always 1.0. \item The \textbf{y} component contains the diffuse coefficient, which is 0 if (\textbf{N} $\cdot$ \textbf{L}) \verb!<! 0; otherwise (\textbf{N} $\cdot$ \textbf{L}). \item The \textbf{z} component contains the specular coefficient, which is 0 if either (\textbf{N} $\cdot$ \textbf{L}) \verb!<! 0 or (\textbf{N} $\cdot$ \textbf{H}) \verb!<! 0; (\textbf{N} $\cdot$ \textbf{H})$^m$ otherwise. \item The \textbf{w} component is 1.0. \end{itemize} There is no vectorized version of this function. \\
+\hline
+\textbf{log(x)} & Natural logarithm \textbf{ln(x)}; \textbf{x} must be greater than 0. \\
+\hline
+\textbf{log2(x)} & Base 2 logarithm of \textbf{x}; \textbf{x} must be greater than 0. \\
+\hline
+\textbf{log10(x)} & Base 10 logarithm of \textbf{x}; \textbf{x} must be greater than 0. \\
+\hline
+\textbf{max(a, b)} & Maximum of \textbf{a} and \textbf{b}. \\
+\hline
+\textbf{min(a, b)} & Minimum of \textbf{a} and \textbf{b}. \\
+\hline
+\textbf{modf(x, out ip)} & Splits \textbf{x} into integral and fractional parts, each with the same sign as \textbf{x}. \newline Stores the integral part in \textbf{ip} and returns the fractional part. \\
+\hline
+\textbf{mul(M, N)} & Matrix product of matrix \textbf{M} and matrix \textbf{N}, as shown below: \newline
+$
+mul(M, N) =
+\begin{bmatrix}
+M_{11} & M_{21} & M_{31} & M_{41} \\
+M_{12} & M_{22} & M_{32} & M_{42} \\
+M_{13} & M_{23} & M_{33} & M_{43} \\
+M_{14} & M_{24} & M_{34} & M_{44} \\
+\end{bmatrix}
+\begin{bmatrix}
+N_{11} & N_{21} & N_{31} & N_{41} \\
+N_{12} & N_{22} & N_{32} & N_{42} \\
+N_{13} & N_{23} & N_{33} & N_{43} \\
+N_{14} & N_{24} & N_{34} & N_{44} \\
+\end{bmatrix}
+$ \newline
+If \textbf{M} has size \textbf{A} x \textbf{B}, and \textbf{N} has size \textbf{B} x \textbf{C}, returns a matrix of size \textbf{A} x \textbf{C}. \\
+\hline
+\textbf{mul(M, v)} & Product of matrix \textbf{M} and column vector \textbf{v}, as shown below: \newline
+$
+mul(M, v) =
+\begin{bmatrix}
+M_{11} & M_{21} & M_{31} & M_{41} \\
+M_{12} & M_{22} & M_{32} & M_{42} \\
+M_{13} & M_{23} & M_{33} & M_{43} \\
+M_{14} & M_{24} & M_{34} & M_{44} \\
+\end{bmatrix}
+\begin{bmatrix}
+v_1 \\
+v_2 \\
+v_3 \\
+v_4 \\
+\end{bmatrix}
+$ \newline
+If \textbf{M} is an \textbf{A} x \textbf{B} matrix and \textbf{v} is a \textbf{B} x \textbf{1} vector, returns an \textbf{A} x \textbf{1} vector. \\
+\hline
+\textbf{mul(v, M)} & Product of row vector \textbf{v} and matrix \textbf{M}, as shown below: \newline
+$
+mul(M, v) =
+\begin{bmatrix}
+v_1 & v_2 & v_3 & v_4 \\
+\end{bmatrix}
+\begin{bmatrix}
+M_{11} & M_{21} & M_{31} & M_{41} \\
+M_{12} & M_{22} & M_{32} & M_{42} \\
+M_{13} & M_{23} & M_{33} & M_{43} \\
+M_{14} & M_{24} & M_{34} & M_{44} \\
+\end{bmatrix}
+$ \newline
+If \textbf{v} is a \textbf{1} x \textbf{A} vector and \textbf{M} is an \textbf{A} x \textbf{B} matrix, returns a \textbf{1} x \textbf{B} vector. \\
+\hline
+\textbf{noise(x)} & Either a one-, two-, or three-dimensional noise function, depending on the type of its argument. The returned value is between 0 and 1, and is always the same for a given input value. \\
+\hline
+\textbf{pow(x, y)} & $x^y$. \\
+\hline
+\textbf{radians(x)} & Degree-to-radian conversion. \\
+\hline
+\textbf{round(x)} & Closest integer to \textbf{x}. \\
+\hline
+\textbf{rsqrt(x)} & Reciprocal square root of \textbf{x}; \textbf{x} must be greater than 0. \\
+\hline
+\textbf{saturate(x)} & Clamps \textbf{x} to the [0, 1] range. \\
+\hline
+\textbf{sign(x)} & 1 if \textbf{x} \verb!>! 0; –1 if \textbf{x} \verb!<! 0; 0 otherwise. \\
+\hline
+\textbf{sin(x)} & Sine of \textbf{x}. \\
+\hline
+\textbf{sincos(float x, out s, out c)} & \textbf{s} is set to the sine of \textbf{x}, and \textbf{c} is set to the cosine of \textbf{x}. \newline If both \textbf{sin(x)} and \textbf{cos(x)} are needed, this function is more efficient than calculating each individually. \\
+\hline
+\textbf{sinh(x)} & Hyperbolic sine of \textbf{x}. \\
+\hline
+\textbf{smoothstep(min, max, x)} & For values of \textbf{x} between \textbf{min} and \textbf{max}, returns a smoothly varying value that ranges from 0 at \textbf{x = min} to 1 at \textbf{x = max}. \newline \textbf{x} is clamped to the range [\textbf{min , max}] and then the interpolation formula is evaluated: \newline \textbf{–2*((x – min)/(max – min))}$^3$\textbf{ +} \newline \textbf{3*((x – min)/(max – min))}$^2$ \\
+\hline
+\textbf{step(a, x)} & 0 if \textbf{x} \verb!<! \textbf{a}; \newline 1 if \textbf{x} \verb!>=! \textbf{a}. \\
+\hline
+\textbf{sqrt(x)} & Square root of \textbf{x}; \newline \textbf{x} must be greater than 0. \\
+\hline
+\textbf{tan(x)} & Tangent of \textbf{x}. \\
+\hline
+\textbf{tanh(x)} & Hyperbolic tangent of \textbf{x}. \\
+\hline
+\textbf{transpose(M)} & Matrix transpose of matrix \textbf{M}. \newline If \textbf{M} is an \textbf{A} x \textbf{B} matrix, the transpose of \textbf{M} is a \textbf{B} x \textbf{A} matrix whose first column is the first row of \textbf{M}, whose second column is the second row of \textbf{M}, whose third column is the third row of \textbf{M}, and so on. \\
+\hline
+
+\end{longtable}
+\FloatBarrier
+
+\section{E.2 Geometric Functions}
+
+Table \ref{table:E-2} presents the geometric functions that are provided in the Cg Standard Library.
+
+\FloatBarrier
+\begin{longtable}{ p{3cm} p{9cm}  }
+\caption{Table E-2. Geometric Functions\label{table:E-2}} \\
+
+Function & Description \\
+\hline
+\endfirsthead
+Function & Description \\
+\hline
+\endhead
+\endfoot
+\endlastfoot
+
+\textbf{distance(pt1, pt2)} & Euclidean distance between points \textbf{pt1} and \textbf{pt2}. \\
+\hline
+\textbf{faceforward(N, I, Ng)} & \textbf{N} if \textbf{dot(Ng, I)} \verb!<! 0; \textbf{-N} otherwise. \\
+\hline
+\textbf{length(v)} & Euclidean length of a vector. \\
+\hline
+\textbf{normalize(v)} & Returns a vector of length 1 that points in the same direction as vector \textbf{v}. \\
+\hline
+\textbf{reflect(I, N)} & Computes reflection vector from entering ray direction \textbf{I} and surface normal \textbf{N}. \newline Valid only for three-component vectors. \\
+\hline
+\textbf{refract(I, N, eta)} & Given entering ray direction \textbf{I}, surface normal \textbf{N}, and relative index of refraction \textbf{eta}, computes refraction vector. \newline If the angle between \textbf{I} and \textbf{N} is too large for a given \textbf{eta}, returns (0, 0, 0). \newline Valid only for three-component vectors. \\
+\hline
+
+\end{longtable}
+\FloatBarrier
+
+\section{E.3 Texture Map Functions}
+
+Table \ref{table:E-3} presents the texture map functions that are provided in the Cg Standard Library. Currently, these texture functions are fully supported by the \textbf{ps_2_0}, \textbf{ps_2_x}, \textbf{arbfp1}, and \textbf{fp30} profiles (though only OpenGL profiles support the \textbf{samplerRECT} functions). They will also be supported by all future advanced fragment profiles with texture-mapping capabilities. All of the functions listed in Table \ref{table:E-3} return a \textbf{float4} value.
+
+Because of the limited pixel programmability of older hardware, the \textbf{ps_1_1}, \textbf{ps_1_2}, \textbf{ps_1_3}, and \textbf{fp20} profiles have restrictions on the use of texture-mapping functions. See the documentation for these profiles for more information.
+
+In the table, the name of the second argument to each function indicates how its values are used when performing the texture lookup:
+\begin{itemize}
+\item \textbf{s} indicates a one-, two-, or three-component texture coordinate.
+\item \textbf{z} indicates a depth comparison value for shadow map lookups.
+\item \textbf{q} indicates a perspective value, and is used to divide the texture coordinate (\textbf{s}) before the texture lookup is performed.
+\end{itemize}
+When you use the texture functions that allow specifying a depth comparison value, the associated texture unit must be configured for depth-compare texturing. Otherwise, no depth comparison will actually be performed.
+
+\FloatBarrier
+\begin{longtable}{ p{5cm} p{7cm}  }
+\caption{Table E-3. Texture Map Functions\label{table:E-3}} \\
+
+Function & Description \\
+\hline
+\endfirsthead
+Function & Description \\
+\hline
+\endhead
+\endfoot
+\endlastfoot
+
+\textbf{tex1D(sampler1D tex, float s)} & 1D nonprojective texture query \\
+\hline
+\textbf{tex1D(sampler1D tex, float s, float dsdx, float dsdy)} & 1D nonprojective texture query with derivatives \\
+\hline
+\textbf{tex1D(sampler1D tex, float2 sz)} & 1D nonprojective depth compare texture query \\
+\hline
+\textbf{tex1D(sampler1D tex, float2 sz, float dsdx, float dsdy)} & 1D nonprojective depth compare texture query with derivatives \\
+\hline
+\textbf{tex1Dproj(sampler1D tex, float2 sq)} & 1D projective texture query \\
+\hline
+\textbf{tex1Dproj(sampler1D tex, float3 szq)} & 1D projective depth compare texture query \\
+\hline
+\textbf{tex2D(sampler2D tex, float2 s)} & 2D nonprojective texture query \\
+\hline
+\textbf{tex2D(sampler2D tex, float2 s, float2 dsdx, float2 dsdy)} & 2D nonprojective texture query with derivatives \\
+\hline
+\textbf{tex2D(sampler2D tex, float3 sz)} & 2D nonprojective depth compare texture query \\
+\hline
+\textbf{tex2D(sampler2D tex, float3 sz, float2 dsdx, float2 dsdy)} & 2D nonprojective depth compare texture query with derivatives \\
+\hline
+\textbf{tex2Dproj(sampler2D tex, float3 sq)} & 2D projective texture query \\
+\hline
+\textbf{tex2Dproj(sampler2D tex, float4 szq)} & 2D projective depth compare texture query \\
+\hline
+\textbf{texRECT(samplerRECT tex, float2 s)} & 2D nonprojective texture rectangle texture query (OpenGL only) \\
+\hline
+\textbf{texRECT(samplerRECT tex, float2 s, float2 dsdx, float2 dsdy)} & 2D nonprojective texture rectangle texture query with derivatives (OpenGL only) \\
+\hline
+\textbf{texRECT(samplerRECT tex, float3 sz)} & 2D nonprojective texture rectangle depth compare texture query (OpenGL only) \\
+\hline
+\textbf{texRECT(samplerRECT tex, float3 sz, float2 dsdx, float2 dsdy)} & 2D nonprojective depth compare texture query with derivatives (OpenGL only) \\
+\hline
+\textbf{texRECTproj(samplerRECT tex, float3 sq)} & 2D texture rectangle projective texture query (OpenGL only) \\
+\hline
+\textbf{texRECTproj(samplerRECT tex, float3 szq)} & 2D texture rectangle projective depth compare texture query (OpenGL only) \\
+\hline
+\textbf{tex3D(sampler3D tex, float3 s)} & 3D nonprojective texture query \\
+\hline
+\textbf{tex3D(sampler3D tex, float3 s, float3 dsdx, float3 dsdy)} & 3D nonprojective texture query with derivatives \\
+\hline
+\textbf{tex3Dproj(sampler3D tex, float4 sq)} & 3D projective texture query \\
+\hline
+\textbf{texCUBE(samplerCUBE tex, float3 s)} & Cube map nonprojective texture query \\
+\hline
+\textbf{texCUBE(samplerCUBE tex, float3 s, float3 dsdx, float3 dsdy)} & Cube map nonprojective texture query with derivatives \\
+\hline
+\textbf{texCUBEproj(samplerCUBE tex, float4 sq)} & Cube map projective texture query (ignores \textit{q}) \\
+\hline
+
+\end{longtable}
+\FloatBarrier
+
+\section{E.4 Derivative Functions}
+
+Table \ref{table:E-4} presents the derivative functions that are supported by the Cg Standard Library. Vertex profiles do not support these functions.
+
+\FloatBarrier
+\begin{longtable}{ p{2cm} p{10cm}  }
+\caption{Table E-4. Derivative Functions\label{table:E-4}} \\
+
+Function & Description \\
+\hline
+\endfirsthead
+Function & Description \\
+\hline
+\endhead
+\endfoot
+\endlastfoot
+
+\textbf{ddx(a)} & Approximate partial derivative of \textbf{a} with respect to screen-space \textbf{x} coordinate \\
+\hline
+\textbf{ddy(a)} & Approximate partial derivative of \textbf{a} with respect to screen-space \textbf{y} coordinate \\
+\hline
+
+\end{longtable}
+\FloatBarrier
+
+\section{E.5 Debugging Function}
+
+Table \ref{table:E-5} presents the debugging function that is supported by the Cg Standard Library. Vertex profiles are not required to support this function.
+
+The intent of the \textbf{debug} function is to allow a program to be compiled twice—once with the \textbf{DEBUG} option and once without. By executing both programs, it is possible to obtain one frame buffer containing the final output of the program and another frame buffer containing an intermediate value to be examined for debugging purposes.
+
+\FloatBarrier
+\begin{longtable}{ p{4cm} p{8cm}  }
+\caption{Table E-5. Debugging Function\label{table:E-5}} \\
+
+Function & Description \\
+\hline
+\endfirsthead
+Function & Description \\
+\hline
+\endhead
+\endfoot
+\endlastfoot
+
+\textbf{void debug(float4 x)} & If the compiler's \textbf{DEBUG} option is enabled, calling this function causes the value \textbf{x} to be copied to the \textbf{COLOR} output of the program, and execution of the program is terminated. \newline If the compiler's \textbf{DEBUG} option is not enabled, this function does nothing. \\
+\hline
+
+
+\end{longtable}
+\FloatBarrier
+
+\end{document}

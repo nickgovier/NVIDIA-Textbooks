@@ -1,0 +1,229 @@
+\documentclass[../main.tex]{subfiles}
+\graphicspath{{\subfix{../Images/}}}
+
+\begin{document}
+
+\chapter{Appendix C. The CgFX File Format}
+
+\section{C.1 What Is CgFX?}
+
+CgFX is a powerful and versatile shader specification and interchange format. As a file format, it is identical to Microsoft's .fx Effect format for DirectX 9. However, the CgFX runtime, like Cg, supports OpenGL as well as DirectX 8 and DirectX 9. For artists and developers of real-time graphics, this format provides several key benefits:
+
+\begin{itemize}
+\item Cross-API, cross-platform compatibility and portability.
+\item Encapsulation of multiple techniques, enabling fallbacks for level-of-detail, functionality, or performance.
+\item Support for Cg, assembly language, and fixed-function shaders.
+\item Editable parameters and GUI descriptions embedded in the file.
+\item Multipass shaders.
+\item Render state and texture state specification.
+\end{itemize}
+
+In practical terms, by wrapping both Cg vertex programs and Cg fragment programs together with render state, texture state, and pass information, developers can describe a complete rendering effect in a CgFX file. Although individual Cg programs may contain the core rendering algorithms necessary for an effect, only when combined with this additional environmental information does the shader become complete and self-contained. The addition of artist-friendly GUI descriptions and fallbacks enables CgFX files to integrate well with the production workflow used by artists and programmers.
+
+\section{C.2 Format Overview}
+
+The Cg language lets you easily express how an object should be rendered. Although current Cg profiles describe only either the vertex or the fragment program a single rendering pass, many shading techniques, such as shadow volumes or shadow maps, require more than one rendering pass.
+
+Many applications need to target a wide range of graphics hardware functionality and performance. Thus, versions of shaders that run on older hardware, and versions that aid performance for distant objects, are important.
+
+Each Cg program typically targets a single profile, and doesn't specify how to fall back to other profiles, to assembly-language shaders, or to fixed-function vertex or fragment processing.
+
+To generate images with Cg programs, some information about their environment is needed. For instance, some programs might require alpha blending to be turned on and depth writes to be disabled. Others may need a certain texture format to work correctly. This information is not present in standard Cg source files.
+
+CgFX addresses these kinds of issues through a text-based file containing Cg, assembly, and fixed-function shaders, along with the render states and environment information needed to render the effect. As we've mentioned, this text file syntax matches that of the Microsoft .fx 2.0 format (the DirectX 9.0 Effect format).
+
+CgFX encapsulates, in a single text file, everything needed to apply a rendering effect. This feature lets a third-party tool or another 3D application use a CgFX text file as is, with no external information other than the necessary geometry and texture data. In this sense, CgFX acts as an interchange format. CgFX allows shaders to be exchanged without the associated C++ code that is normally necessary to make a Cg program work with OpenGL or Direct3D.
+
+\subsection{C.2.1 Techniques}
+
+Each CgFX file usually presents a certain effect that the shader author is trying to achieve—such as bump mapping, environment mapping, or anisotropic lighting. The CgFX file contains one or more \textit{techniques}, each of which describes a way to achieve the effect. Each technique usually targets a certain level of GPU functionality, so a CgFX file may contain one technique for an advanced GPU with powerful fragment programmability, and another technique for older graphics hardware supporting fixed-function texture blending. CgFX techniques can also be used for functionality, level-of-detail, or performance fallbacks. For example:
+
+\FloatBarrier
+\begin{lstlisting}
+effect myEffectName
+{
+   technique PixelShaderVersion
+   {...};
+   
+   technique FixedFunctionVersion
+   {...};
+   
+   technique LowDetailVersion
+   {...};
+};
+\end{lstlisting}
+\FloatBarrier
+
+\subsection{C.2.2 Passes}
+
+Each technique contains one or more \textit{passes}. Each pass represents a set of render states and shaders to apply for a single rendering pass within a technique. For instance, pass 0 might lay down depth only, so that passes 1 and 2 can apply an additive alpha-blending technique without requiring polygon sorting.
+
+Each pass may contain a vertex program, a fragment program, or both, and each pass may use fixed-function vertex or pixel processing, or both. For example, pass 0 might use fixed-function pixel processing to output the ambient color. Pass 1 could use a \textbf{ps_1_1} fragment program, and pass 2 might use a \textbf{ps_2_0} fragment program. In practice, all passes within a technique typically use fixed-function processing, or all use Cg or assembly programs. This method prevents depth-fighting artifacts that can occur when the fixed-function and programmable parts of some GPUs process the same data in different ways.
+
+\subsection{C.2.3 Render States}
+
+Each pass also contains render states such as alpha blending, depth writes, and texture filtering modes, to name a few. For example:
+
+\FloatBarrier
+\begin{lstlisting}
+pass firstPass
+{
+   DepthWriteEnable = true;
+   AlphaBlendEnable = false;
+   MinFilter[ 0 ] = Linear;
+   MagFilter[ 0 ] = Linear;
+   MipFilter[ 0 ] = Linear;
+   
+   // Pixel shader written in assembly
+   PixelShader = asm
+   {
+      ps.1.1
+      tex t0;
+      mov r0, t0;
+   };
+};
+\end{lstlisting}
+\FloatBarrier
+
+Notice that CgFX, in addition to embedding Cg programs, allows you to encode assembly-language vertex and fragment programs with the \textbf{asm} keyword.
+
+\subsection{C.2.4 Variables and Semantics}
+
+Finally, the CgFX file contains global and per-technique Cg-style variables. These variables are usually passed as uniform parameters to Cg functions, or as the value for a render or texture state setting. For instance, a \textbf{bool} variable might be used as a uniform parameter to a Cg function, or as a value enabling or disabling the alpha blend render state:
+
+\FloatBarrier
+\begin{lstlisting}
+bool AlphaBlending = false;
+float bumpHeight = 0.5f;
+\end{lstlisting}
+\FloatBarrier
+
+These variables can contain a user-defined semantic, which helps applications provide the correct data to the shader without having to decipher the variable names:
+
+\FloatBarrier
+\begin{lstlisting}
+float4x4 myViewMatrix : ViewMatrix;
+texture2D someTexture : DiffuseMap;
+\end{lstlisting}
+\FloatBarrier
+
+A CgFX-enabled application can then query the CgFX file for its variables and their semantics.
+
+\subsection{C.2.5 Annotations}
+
+Additionally, each variable can have an optional \textit{annotation}. The annotation is a per-variable-instance structure that contains data that the effect author wants to communicate to a CgFX-aware application, such as an artist tool. The application can then allow the variable to be manipulated, based on a GUI element that is appropriate for the type of annotation. In addition to variables, techniques and passes can also be annotated to provide the application more information about them.
+
+An annotation can be used to describe a user interface element for manipulating uniform variables, or to describe the type of render target a rendering pass is expecting.
+
+\FloatBarrier
+\begin{lstlisting}
+float bumpHeight
+<
+   string gui  = "slider";
+   float  uimin  = 0.0f;
+   float  uimax  = 1.0f;
+   float  uistep = 0.1f;
+> = 0.5f;
+\end{lstlisting}
+\FloatBarrier
+
+The annotation appears after the optional semantic, and before variable initialization. Applications can query for annotations, and use them to expose certain parameters to artists in a CgFX-aware tool, such as Discreet's 3ds max 5 or Alias|Wavefront's Maya 4.5.
+
+\subsection{C.2.6 A Sample CgFX File}
+
+Example C-1 shows a sample CgFX file that calculates basic diffuse and specular lighting.
+
+\FloatBarrier
+\begin{lstlisting}[caption=Example C-1. A Sample CgFX File]
+struct VS_INPUT
+{
+      float4 vPosition  : POSITION;
+      float4 vNormal    : NORMAL;
+      float4 vTexCoords : TEXCOORD0;
+};
+
+struct VS_OUTPUT
+{
+      float4 vTexCoord0 : TEXCOORD0;
+      float4 vDiffuse   : COLOR0;
+      float4 vPosition  : POSITION;
+      float4 vSpecular  : COLOR1;
+};
+
+VS_OUTPUT myvs(uniform float4x4 ModelViewProj,
+               uniform float4x4 ModelView,
+               uniform float4x4 ModelViewIT,
+               uniform float4x4 ViewIT,
+               uniform float4x4 View,
+               const VS_INPUT vin,
+               uniform float4 lightPos,
+               uniform float4 diffuse,
+               uniform float4 specular,
+               uniform float4 ambient)
+{
+ VS_OUTPUT vout;
+ float4 position = mul(ModelView, vin.vPosition);
+ float4 normal =   mul(ModelViewIT, vin.vNormal);
+
+ float4 viewLightPos = mul(View, lightPos);
+ float4 lightvec = normalize(viewLightPos - position);
+ float4 eyevec =   normalize(ViewIT[3]);
+ float self_shadow = max(dot(normal, lightvec), 0);
+
+ float4 halfangle = normalize(lightvec + eyevec);
+ float spec_term =  max(dot(normal, halfangle), 0);
+
+ float4 diff_term = ambient + diffuse * self_shadow +
+                    self_shadow * spec_term * specular;
+ vout.vDiffuse = diff_term;
+ vout.vPosition = mul(ModelViewProj, vin.vPosition);
+ return vout;
+}
+
+float4x4 vit     : ViewIT;
+float4x4 viewmat : View;
+float4x4 mv      : WorldView;
+float4x4 mvit    : WorldViewIT;
+float4x4 mvp     : WorldViewProjection;
+float4 diffuse   : DIFFUSE = { 0.1f, 0.1f, 0.5f, 1.0f };
+float4 specular  : SPECULAR = { 1.0f, 1.0f, 1.0f, 1.0f };
+float4 ambient   : AMBIENT = { 0.1f, 0.1f, 0.1f, 1.0f };
+float4 lightPos  : Position
+<
+      string Object = "PointLight";
+      string Space = "World";
+> = { 100.0f, 100.0f, 100.0f, 0.0f };
+
+technique t0
+{
+  pass p0
+  {
+    Zenable = true;
+    ZWriteEnable = true;
+    CullMode = None;
+    VertexShader = compile vs_1_1 myvs( mvp, mv, mvit, vit,
+                                        viewmat, lightPos,
+                                        diffuse, specular,
+                                        ambient);
+  }
+}
+\end{lstlisting}
+\FloatBarrier
+
+\section{C.3 Cg Plug-Ins Supporting the CgFX Format}
+
+At the time of publication, Cg plug-ins are available for major digital content creation (DCC) applications, such as Alias|Wavefront's Maya 4.5 and Discreet's 3ds max 5, which directly support the CgFX format.
+
+The \textit{Cg Plug-in for 3ds max} allows an artist to view and adjust the editable parameters of a CgFX shader right from within 3ds max. All changes made to the shader settings are displayed in real time in the native 3ds max viewports while running max under DirectX. This affords the artist more direct control of real-time 3D shaders.
+
+The \textit{Cg Plug-in for Maya} also allows an artist to view and adjust the editable parameters of a Cg shader "live," right within Maya's shading editor windows (such as the attribute editor and animation graph windows). Again, changes made to the shader settings are displayed in real time in Maya's OpenGL viewports.
+
+\section{C.4 Learning More About CgFX}
+
+CgFX-related software is available from the NVIDIA Cg Web site:
+
+\textbf{http://developer.nvidia.com/Cg}
+
+Refer to this site often to keep up with the latest applications, plug-ins, and other software that leverages the CgFX file format. Information on how to report any bugs you may find in the release is also available on this site. Also, see the \textit{DirectX 9.0 effect} reference documentation for additional specification details and examples.
+
+\end{document}

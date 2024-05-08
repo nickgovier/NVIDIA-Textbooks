@@ -1,0 +1,49 @@
+\documentclass[../main.tex]{subfiles}
+\graphicspath{{\subfix{../Images/}}}
+
+\begin{document}
+
+\chapter{Appendix D. Cg Keywords}
+
+\section{D.1 Cg Keyword List}
+
+Following is the list of Cg reserved words. Words marked with an asterisk are case-insensitive.
+
+In addition to the words on this list, any identifier with two underscores as a prefix (for example, \textbf{__ newType}) is reserved. Note that matrix and vector types (such as \textbf{half2x3} or \textbf{float4}) are not on this list because they can be used as identifiers. Still, we recommend that you treat the matrix and vector types as reserved words, thereby avoiding confusion.
+
+
+\begin{table}
+\centering
+\begin{tabular}{ p{4cm} p{4cm} p{4cm} p{4cm}  } 
+
+\textbf{asm*}             & \textbf{explicit}          & \textbf{pixelfragment*}      & \textbf{template} \\
+\textbf{asm_fragment}     & \textbf{extern}            & \textbf{pixelshader*}        & \textbf{texture*} \\
+\textbf{auto}             & \textbf{FALSE}             & \textbf{private}             & \textbf{texture1D} \\
+\textbf{bool}             & \textbf{fixed}             & \textbf{protected}           & \textbf{texture2D} \\
+\textbf{break}            & \textbf{float*}            & \textbf{public}              & \textbf{texture3D} \\
+\textbf{case}             & \textbf{for}               & \textbf{register}            & \textbf{textureCUBE} \\
+\textbf{catch}            & \textbf{friend}            & \textbf{reinterpret_cast}    & \textbf{textureRECT} \\
+\textbf{char}             & \textbf{get}               & \textbf{return}              & \textbf{this} \\
+\textbf{class}            & \textbf{goto}              & \textbf{row_major}           & \textbf{throw} \\
+\textbf{column_major}     & \textbf{half}              & \textbf{sampler}             & \textbf{TRUE} \\
+\textbf{compile}          & \textbf{if}                & \textbf{sampler_state}       & \textbf{try} \\
+\textbf{const}            & \textbf{in}                & \textbf{sampler1D}           & \textbf{typedef} \\
+\textbf{const_cast}       & \textbf{inline}            & \textbf{sampler2D}           & \textbf{typeid} \\
+\textbf{continue}         & \textbf{inout}             & \textbf{sampler3D}           & \textbf{typename} \\
+\textbf{decl*}            & \textbf{int}               & \textbf{samplerCUBE}         & \textbf{uniform} \\
+\textbf{default}          & \textbf{interface}         & \textbf{shared}              & \textbf{union} \\
+\textbf{delete}           & \textbf{long}              & \textbf{short}               & \textbf{unsigned} \\
+\textbf{discard}          & \textbf{matrix*}           & \textbf{signed}              & \textbf{using} \\
+\textbf{do}               & \textbf{mutable}           & \textbf{sizeof}              & \textbf{vector*} \\
+\textbf{double}           & \textbf{namespace}         & \textbf{static}              & \textbf{vertexfragment*} \\
+\textbf{dword*}           & \textbf{new}               & \textbf{static_cast}         & \textbf{vertexshader*} \\
+\textbf{dynamic_cast}     & \textbf{operator}          & \textbf{string*}             & \textbf{virtual} \\
+\textbf{else}             & \textbf{out}               & \textbf{struct}              & \textbf{void} \\
+\textbf{emit}             & \textbf{packed}            & \textbf{switch}              & \textbf{volatile} \\
+\textbf{enum}             & \textbf{pass*}             & \textbf{technique*}          & \textbf{while} \\
+
+\end{tabular}
+\end{table}
+
+
+\end{document}
