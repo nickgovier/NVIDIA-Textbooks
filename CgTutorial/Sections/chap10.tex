@@ -1,0 +1,247 @@
+\documentclass[../main.tex]{subfiles}
+\graphicspath{{\subfix{../Images/}}}
+
+\begin{document}
+
+\chapter{Chapter 10. Profiles and Performance}
+
+This chapter provides additional information about the profiles supported by your Cg compiler and offers advice on how to write high-performance Cg programs. This chapter has the following two sections:
+
+\begin{itemize}
+\item \textbf{"Profile Descriptions"} describes the capabilities and limitations of the OpenGL and Direct3D profiles supported by Cg.
+\item \textbf{"Performance"} gives practical advice about improving the performance of your Cg programs.
+\end{itemize}
+
+\subsection{10.1 Profile Descriptions}
+
+This section describes the profiles that are available in Cg at the time of writing, along with brief summaries of their capabilities and limitations. More detailed information is available in the \textit{Cg Toolkit User's Manual: A Developer's Guide to Programmable Graphics}, which is available online at NVIDIA's Developer Web site, \textbf{developer.nvidia.com}
+
+\subsection{10.1.1 The Vertex Shader Profile for DirectX 8}
+
+The DirectX 8 vertex shader profile compiles Cg source code to DirectX 8 vertex shaders. The profile's identifier is \textbf{vs_1_1}. The profile restricts Cg to matching the capabilities of DirectX 8 vertex shaders. To understand the capabilities of DirectX 8 vertex shaders and the code produced by the compiler, refer to the "Vertex Shader Reference" section of the \textit{DirectX 8.1 SDK documentation}.
+
+The following list describes some important details about the \textbf{vs_1_1} profile:
+
+\begin{itemize}
+\item 128-instruction limit.
+\item There are a maximum of 96 four-component uniform parameters and constants per program. The Cg compiler does its best to pack constants efficiently.
+\item \textbf{if} statements and the \textbf{?:} operator are treated as conditional assignments.
+\item \textbf{while}, \textbf{do}, and \textbf{for} statements are allowed only if the loops they define can be unrolled by the compiler (that is, if the compiler can determine the number of iterations in the loop).
+\item This profile treats all continuous data types (such as \textbf{float}) as 32-bit floating-point values.
+\item This profile allows variable indexing of arrays as long as the array is a uniform constant. This profile does not support writing to arrays with variable indexing.
+\item No sampling of textures.
+\item Arbitrary swizzling and negation have no performance penalty.
+\end{itemize}
+
+\subsection{10.1.2 The Basic NVIDIA Vertex Program Profile for OpenGL}
+
+The NVIDIA vertex program profile compiles Cg source code to vertex programs that are compatible with the \textbf{NV_vertex_program} OpenGL extension supported by NVIDIA and Mesa. The profile's identifier is \textbf{vp20}. The profile restricts Cg to matching the capabilities of the \textbf{NV_vertex_program} OpenGL extension. To understand the capabilities of NVIDIA vertex programs, refer to the extension's specification online.
+
+This profile is functionally comparable to the \textbf{vs_1_1} profile discussed previously. The details pertaining to the \textbf{vs_1_1} profile apply to the \textbf{vp20} profile as well.
+
+For \textbf{vp20} programs to operate correctly, constants in a \textbf{vp20} profile must be loaded into the appropriate program parameter registers. Be sure to use the Cg runtime to ensure that the proper constants are loaded.
+
+This profile, unlike the \textbf{vs_1_1} profile, provides output semantics for both a front-facing and a back-facing primary and secondary color to support two-sided lighting.
+
+\subsection{10.1.3 The ARB Vertex Program Profile for OpenGL}
+
+The OpenGL Architecture Review Board (ARB) vertex program profile compiles Cg source code to vertex programs that are compatible with the \textbf{ARB_vertex_program} multivendor OpenGL extension. The profile's identifier is \textbf{arbvp1}. The profile restricts Cg to matching the capabilities of the \textbf{ARB_vertex_program} OpenGL extension. To understand the capabilities of ARB vertex programs, refer to the extension's specification online.
+
+Like the \textbf{vp20} profile, this profile is functionally comparable to the \textbf{vs_1_1} profile discussed previously. The details pertaining to the \textbf{vs_1_1} profile apply to the \textbf{arbvp1} profile as well. Like \textbf{vp20}, the \textbf{arbvp1} supports outputting front-facing and back-facing colors.
+
+Unlike the \textbf{vp20} profile, the \textbf{arbvp1} profile allows Cg programs to refer to the OpenGL state directly. However, if you want to write Cg programs that are compatible with \textbf{vp20} and \textbf{vs_1_1} profiles, you should use the alternate mechanism of setting uniform variables with the necessary state using the Cg runtime. Additionally, referring to OpenGL state directly results in a slight driver validation penalty when binding to \textbf{arbvp1} programs.
+
+\subsection{10.1.4 The Vertex Shader Profiles for DirectX 9}
+
+The DirectX 9 vertex shader profiles compile Cg source code to DirectX 9 vertex shaders. The profile identifiers are either \textbf{vs_2_0} or \textbf{vs_2_x}. These profiles restrict Cg to matching the capabilities of DirectX 9 vertex shaders. The \textbf{vs_2_x} profile is an extended version of the \textbf{vs_2_0} profile; the main enhancement is support for dynamic branching. To understand the capabilities of DirectX 9 vertex shaders and the code produced by the compiler, refer to the "Vertex Shader Reference" section of the \textit{DirectX 9 SDK} documentation.
+
+These profiles support more instructions and temporaries than the \textbf{vs_1_1} profile does. The \textbf{vs_2_x} profile also supports generalized looping and conditionals.
+
+\subsection{10.1.5 The Advanced NVIDIA Vertex Program Profile for OpenGL}
+
+The advanced NVIDIA vertex program profile compiles Cg source code to vertex programs compatible with the \textbf{NV_vertex_program2} OpenGL extension supported by NVIDIA's CineFX architecture. The profile identifier is \textbf{vp30}. This profile restricts Cg to matching the capabilities of the \textbf{NV_vertex_program2} OpenGL extension.
+
+This profile is a superset of the \textbf{vp20} profile. Any program that compiles for the \textbf{vp20} profile should also compile for the \textbf{vp30} profile. Like the \textbf{vs_2_x} profile, the \textbf{vp30} profile supports more instructions and temporaries than the \textbf{vp20} profile does. The \textbf{vp30} profile also supports generalized looping and conditionals.
+
+\subsection{10.1.6 The Pixel Shader Profiles for DirectX 8}
+
+The DirectX 8 pixel shader profiles compile Cg source code to DirectX 8.1 pixel shaders. Cg provides profiles for pixel shader versions 1.1, 1.2, and 1.3. The profile identifiers are \textbf{ps_1_1}, \textbf{ps_1_2}, and \textbf{ps_1_3}, respectively. Each profile restricts Cg to matching the capabilities of the respective version of DirectX 8 pixel shaders. To understand the capabilities of DirectX 8 pixel shaders and the code produced by the compiler, refer to the "Pixel Shader Reference" section of the \textit{DirectX 8.1 SDK} documentation.
+
+The following list describes some important details about the \textbf{ps_1_1}, \textbf{ps_1_2}, and \textbf{ps_1_3} profiles:
+
+\begin{itemize}
+\item No more than four texture operations.
+\item No more than eight arithmetic operations.
+\item Texture access operations must precede arithmetic operations.
+\item \textbf{while}, \textbf{do}, and \textbf{for} statements are allowed only if the loops they define can be unrolled by the compiler.
+\item This profile represents all continuous data types (such as \textbf{float}) as signed values clamped to the range [-1, 1], [-2, 2], or [-8, 8] (depending on the underlying GPU and Direct3D capabilities).
+\item Limited swizzling capabilities:
+\begin{itemize}
+    \item \textbf{.x/.r}, \textbf{.y/.g}, \textbf{.z/.b}, \textbf{.w/.a}
+    \item \textbf{.xy/.rg}, \textbf{.xyz/.rgb}, and \textbf{.xyzw/.rgba}
+    \item \textbf{.xxx/.rrr}, \textbf{.yyy/.ggg}, \textbf{.zzz/.bbb}, \textbf{.www/.aaa}
+    \item \textbf{.xxxx/.rrrr}, \textbf{.yyyy/.gggg}, \textbf{.zzzz/.bbbb}, \textbf{.wwww/.aaaa}
+\end{itemize}
+\item Only limited versions of the Cg Standard Library functions are supported.
+\item Only a few arithmetic operations are allowed:
+\begin{itemize}
+    \item Modifiers (see the \textit{DirectX 8.1 SDK} documentation)
+    \item Binary operators (\textbf{+}, \textbf{-}, and \textbf{*})
+    \item Built-in functions (\textbf{dot}, \textbf{lerp}, \textbf{saturate})
+\end{itemize}
+This profile does not support arrays with variable indices.
+\end{itemize}
+
+\subsection{10.1.7 The Basic NVIDIA Fragment Program Profile for OpenGL}
+
+The basic NVIDIA fragment program profile for OpenGL compiles Cg source code into textual register combiners and texture shader configurations supported by the \textbf{NV_register_combiners2} and \textbf{NV_texture_shader} OpenGL extensions. The profile's identifier is \textbf{fp20}. To understand the capabilities of this profile, refer to the \textbf{NV_register_combiners}, \textbf{NV_register_combiners2}, \textbf{NV_texture_shader}, \textbf{NV_texture_shader2}, and \textbf{NV_texture_shader3} OpenGL extension specifications. The code generated by the compiler for this profile conforms to NVIDIA's \textbf{nvparse} format.
+
+The capabilities of this profile are slightly superior to those of the \textbf{ps_1_3} profile.
+
+This profile supports the \textbf{samplerRECT} data type to access non-power-of-two dimensioned textures exposed by the multivendor \textbf{NV_texture_rectangle} OpenGL extension.
+
+\subsection{10.1.8 The DirectX 9 Pixel Shader Profiles}
+
+The DirectX 9 pixel shader profiles compile Cg source code to DirectX 9 pixel shaders. The profile identifiers are either \textbf{ps_2_0} and \textbf{ps_2_x}. These profiles restrict Cg to matching the capabilities of DirectX 9 vertex shaders. The \textbf{ps_2_x} profile is an extended version of the \textbf{ps_2_0} profile; the main enhancement is support for many more instructions and texture accesses. To understand the capabilities of DirectX 9 vertex shaders and the code produced by the compiler, refer to the "Pixel Shader Reference" section of the \textit{DirectX 9 SDK} documentation.
+
+The key capabilities and limitations of the \textbf{ps_2_0} or \textbf{ps_2_x} profiles are as follows:
+
+\begin{itemize}
+\item Floating-point per-fragment operations.
+\item Up to 16 texture units and, for \textbf{ps_2_x}, no limit on the number of texture fetch instructions.
+\item For \textbf{ps_2_0}, up to four levels of dependent texture accesses. For \textbf{ps_2_x}, there is no limit on dependent texture accesses.
+\item Arbitrary swizzles and negation.
+\item General comparison and boolean operations.
+\item Optional access to gradient instructions.
+\item Variable indexing of arrays is not allowed (use textures instead).
+\item Bitwise operators such as \verb!&!, \verb!|!, and \verb!^! are not supported.
+\end{itemize}
+
+\subsection{10.1.9 The ARB Fragment Program Profile for OpenGL}
+
+The ARB fragment program profile compiles Cg source code to vertex programs compatible with the \textbf{ARB_fragment_program} multivendor OpenGL extension. The profile's identifier is \textbf{arbfp1}. The profile restricts Cg to matching the capabilities of the \textbf{ARB_fragment_program} OpenGL extension. To understand the capabilities of ARB fragment programs, refer to the extension's specification online.
+
+This profile is functionally comparable to the \textbf{ps_2_x} profile discussed previously. The details pertaining to the \textbf{ps_2_x} profile apply to the \textbf{arbfp1} profile as well.
+
+\subsection{10.1.10 The Advanced NVIDIA Fragment Program Profile for OpenGL}
+
+The advanced NVIDIA fragment program profile compiles Cg source code to vertex programs that are compatible with the \textbf{NV_fragment_program} OpenGL extension supported by NVIDIA's CineFX architecture. The profile identifier is \textbf{fp30}. This profile restricts Cg to matching the capabilities of the \textbf{NV_fragment_program} OpenGL extension.
+
+This profile is the most functional fragment-level profile at the time of this book's writing. It is a superset of the \textbf{ps_2_x} profile.
+
+In addition to all the functionality mentioned in the section describing the \textbf{ps_2_x} profile, the \textbf{fp30} profile also provides:
+
+\begin{itemize}
+\item Support for the \textbf{samplerRECT} data type for sampling non-power-of-two textures.
+\item Support for the \textbf{fixed} data type with a range of [-2,+2].
+\item Support for the \textbf{half} data type for half-precision floating-point.
+\item Support for additional instructions exposed by the \textbf{NV_fragment_program} extension.
+\end{itemize}
+
+\section{10.2 Performance}
+
+The flexibility offered by modern and future GPUs, combined with the ease-of-use that Cg provides, makes it easy to write lengthy fragment programs. A practical problem arises, though: as your programs get longer, they execute more slowly. In the majority of cases, the Cg compiler will take care of optimizations for you. But it cannot choose high-level algorithms for you. Therefore, this section presents some concepts and techniques that will help you obtain optimal performance from your programs. A few of these have already been presented in some form or another earlier in the book, but we've put them all together here with additional explanation, for easier reference.
+
+\subsection{10.2.1 Use the Cg Standard Library}
+
+As you've worked through the examples in this book, you've probably found Cg's Standard Library functions quite convenient. But the Standard Library is about more than convenience—it's also about performance. The Standard Library functions are defined to allow the Cg compiler to convert them into highly optimized assembly code. In many cases, Standard Library functions compile to single assembly instructions that run in just one GPU clock cycle! Examples of such functions are \textbf{sin}, \textbf{cos}, \textbf{lit}, \textbf{dot}, and \textbf{exp}. In addition, using the Standard Library provides some amount of future-proofing. New versions of the Standard Library will be available with future versions of Cg, and these versions will be optimized for future GPUs.
+
+Despite all these advantages, there may be occasions when you won't want to use the Standard Library functions. If you require a simpler version of a function, or if you can write an especially fast but simplified version of a function that suits your particular needs, you may be better off not using the Standard Library. One example of this, from Chapter 8, is using normalization cube maps rather than the Standard Library's \textbf{normalize} routine for normalizing vectors in fragment programs.
+
+\subsection{10.2.2 Take Advantage of Uniform Parameters}
+
+Always be wary of what you're passing to your vertex and fragment programs as uniform parameters. For example, if you're passing a \textbf{time} variable to the fragment program, and the program ends up using \textbf{sin(time)} instead, you're better off computing \textbf{sin(time)} once in your application, and passing that as the uniform parameter to your fragment program. This is far more efficient than computing \textbf{sin(time)} needlessly for each fragment that's generated! Even if your program needed \textbf{time} and \textbf{sin(time)}, it's more efficient to pass in these values as two uniform parameters than to pass just \textbf{time} and to compute \textbf{sin(time)} in your program.
+
+\subsection{10.2.3 Using Vertex Programs vs. Fragment Programs}
+
+Earlier in this book, you saw how fragment programs often can produce more accurate images than vertex programs can. If your scene is poorly tessellated, vertex programs often produce faceted and coarse images. But per-fragment shading doesn't come for free. A fragment program executes for each fragment that is generated, so fragment programs typically run several million times per frame. On the other hand, vertex programs normally run only tens of thousands of times per frame (assuming that your models are not heavily tessellated). In addition, fragment programs have more limited looping and branching capabilities than do vertex programs, though their capabilities will improve over time. In particular, fragment programs for third-generation and earlier GPUs are rather limited.
+
+Each time you write a Cg program, you have to decide how you're going to distribute the program's workload between the vertex and fragment programs. A simple rule of thumb is to use the vertex program to perform basic transformations and texture coordinate manipulations, and rely on the fragment program for the remaining calculations. In general, this approach is a good one, because it lets you move the more expensive mathematical operations to the vertex program. By balancing the workload between the GPU's vertex and fragment processors, you prevent either one from becoming an overwhelming bottleneck.
+
+In some situations, you might want to trade image quality for performance. For these circumstances, it might make sense to move more of your computations to the vertex program, if doing so balances the program workload by reducing the fragment program's length. The drop in image quality might be smaller than you'd expect, because interpolated values often work quite well. If the quantity that you're interpolating varies linearly, you won't see any drop in image quality at all when using a vertex program instead of a fragment program.
+
+Another way to decide when to use a vertex program or a fragment program is to think about how often your program parameters vary. If the parameters vary slowly (for example, in diffuse lighting), it is probably adequate to make your calculations in the vertex program. However, if rapidly changing parameters are involved (for example, in specular lighting), you'll want a fragment program to get accurate results.
+
+\subsection{10.2.4 Data Types and Their Impact on Performance}
+
+A number of Cg's profiles support a variety of data types. To achieve optimal performance, you should use the smallest data type that is appropriate for any particular computation.
+
+The \textbf{fixed} type is useful for low-precision computations, such as color calculations. In the \textbf{fp30} and \textbf{ps_2_x} fragment program profiles, fixed values range from -2 to +2 and provide 12 bits of fixed-point precision. What \textbf{fixed} gives up in precision it gets back in performance: calculations using the \textbf{fixed} data type often run at several times the speed of their \textbf{half} or \textbf{float} counterparts on the CineFX architecture.
+
+The \textbf{half} type is helpful when you want high precision and more range, and you don't require the highest possible precision. In the \textbf{fp30} profile, \textbf{half} provides 16 bits of floating-point precision (1 bit of sign, 10 bits of mantissa, and 5 bits of exponent), which is well suited for many graphics-related quantities such as colors and normals. Particularly when you are dealing with color calculations, the \textbf{half} type is usually sufficient. On the CineFX architecture, programs that minimize their temporary storage by using \textbf{half} for intermediate values run faster than if all values were stored as \textbf{float} values.
+
+Use the \textbf{float} type when you need the highest possible range and precision. For example, at the fragment level, you should use \textbf{float} when dealing with extreme texture coordinates and derivatives.
+
+\subsection{10.2.5 Take Advantage of Vectorization}
+
+It's a lot more efficient to perform computations with vector types than with individual scalars. For most operations, it takes the same amount of time to apply them to a vector as it takes to apply them to a scalar! This means that you can speed up some sequences of instructions by up to four times by using vectors prudently. Cg's swizzling and write-masking features make it easy to insert and extract scalars from vectors, so it makes good sense to pack your computations into vectors whenever possible.
+
+For example, recall the particle system from Chapter 6. In the vertex program, you calculated the particle positions using the following vectorized code:
+
+\FloatBarrier
+\begin{lstlisting}
+   float4 pFinal = pInitial +
+                   vInitial * t +
+                   0.5 * acceleration * t * t;
+\end{lstlisting}
+\FloatBarrier
+
+This terse approach could be four times faster than calculating each component of the position individually:
+
+\FloatBarrier
+\begin{lstlisting}
+   float4 pFinal;
+   pFinal.x = pInitial.x + vInitial.x*t + 0.5*acceleration.x*t*t;
+   pFinal.y = pInitial.y + vInitial.y*t + 0.5*acceleration.y*t*t;
+   pFinal.z = pInitial.z + vInitial.z*t + 0.5*acceleration.z*t*t;
+   pFinal.w = pInitial.w + vInitial.w*t + 0.5*acceleration.w*t*t;
+\end{lstlisting}
+\FloatBarrier
+
+In a simple case like this, the compiler might actually be able to vectorize the code for you, but in general, it's more natural to think in terms of vectors rather than individual component calculations. Take advantage of the convenient vector types that Cg offers. In addition to being more efficient, vectorized code is often clearer and more concise than nonvectorized code.
+
+\subsection{10.2.6 Use Textures to Encode Functions}
+
+One way to speed up your fragment programs is to evaluate functions by looking up textures instead of performing arithmetic operations. Consider a function that takes one floating-point value as input and returns a floating-point value as its result. If the input value ranges from 0 to 1, you can use the input value as the texture coordinate for a 1D texture. The result of the query is a texel color, which is the function's result.
+
+This technique isn't limited to just 1D textures. You can use a 2D texture to encode a function of two variables, or you can use a cube map or 3D texture to look up a 3D function. A good example is the normalization cube map you used in Chapter 8. Also, don't forget that RGBA textures allow you to encode values in each of the four components! Keep this in mind and you'll often find opportunities to make your programs more efficient by encoding useful information (that may have nothing to do with color) in each channel.
+
+Using textures to encode functions has many advantages. First, no arithmetic operations are required, which means that valuable GPU cycles are saved. Second, texture lookups take advantage of the GPU's specialized texture-filtering hardware, which can automatically smooth out your function (if you want it to). That is, you can represent your function using a small texture, and allow the hardware to interpolate between the texels. Third, textures give you the flexibility to encode any arbitrary function, because they don't necessarily have to be created using a specific formula or pattern. You could even have an artist paint a function into a texture, giving the artist a higher level of aesthetic control.
+
+\subsection{10.2.7 Use Swizzling and Negation Freely}
+
+Vertex programs on NVIDIA GPUs provide swizzling and negation of variables without any performance penalty. Use this capability to your advantage.
+
+\begin{framed}
+CineFX
+
+CineFX GPUs have these same free negation and swizzling capabilities at the fragment level.
+
+CineFX GPUs also compute saturation (clamping to the [0, 1] range) and absolute values for free at the fragment level. Use the \textbf{saturate} Standard Library routine for saturation and the \textbf{abs} Standard Library routine for absolute values.
+\end{framed}
+
+\subsection{10.2.8 Shade Only the Pixels That You Must}
+
+For complex programs, the fragment program tends to be the bottleneck in your application. In these cases, it's judicious to make sure you don't waste valuable GPU cycles on parts of the scene that aren't visible. A good way to ensure this is to draw the scene once without shading, but with depth testing enabled. We call this "laying down $z$ first." After this first pass, each pixel of the frame buffer contains only the closest surface that is visible at that pixel. For subsequent passes, configure the depth test to draw only those fragments whose depths match the depth values in the frame buffer. In this way, the fragment program executes only for visible fragments, instead of for all potentially visible fragments.
+
+If you're familiar with OpenGL or Direct3D, you're probably wondering how this helps, since depth testing conventionally takes place at the end of the pipeline, after the fragment program has already executed. Fortunately, most modern graphics processors have special hardware that performs depth testing before the fragment program runs, making it possible to avoid running the fragment program when it's not necessary.
+
+\subsection{10.2.9 Shorter Assembly Is Not Necessarily Faster}
+
+When the Cg compiler creates assembly code from your Cg source code, it tries to produce code that will run most efficiently on the specified target profile or GPU. Modern GPUs are complex, and may require instructions to be scheduled in specific ways to achieve optimal performance. In some cases, the compiler may generate extra instructions that make its assembly code output longer than the assembly code generated by DirectX 9's \textbf{fxc} compiler, for example. In these situations, the extra assembly instructions run faster because they can be executed in parallel, or because they don't have dependencies that would cause the GPU's shader pipeline to stall.
+
+The lesson to take from this discussion is that you shouldn't judge the performance of a compiler by the length of the assembly code that it outputs. However, it still is often true that the shorter the compiled code, the faster the program runs. In the end, the best way to evaluate a program's performance is to measure the frame rate that you get using the program. This lets you put all theory aside and quantify concrete, real-world performance.
+
+\section{10.3 Exercises}
+\begin{itemize}
+\item \textbf{Try this yourself:} Rewrite earlier fragment program examples in this book to take advantage of the \textbf{fixed} data type when compiled for the \textbf{fp30} and \textbf{ps_2_x} profiles.
+\item \textbf{Answer this:} As graphics hardware continues to advance, you can expect more powerful and general profiles. Research the latest available Cg profiles supported by your compiler.
+\end{itemize}
+
+\section{10.4 Further Reading}
+
+Specifications for the OpenGL extensions mentioned in this chapter can be found online at \textbf{http://oss.sgi.com/projects/ogl-sample/registry}. NVIDIA also publishes \textit{NVIDIA OpenGL Extension Specifications}, which collects all the OpenGL specifications implemented by NVIDIA OpenGL drivers. Documentation found on the NVIDIA Developer Web site (\textbf{developer.nvidia.com}) explains the \textbf{nvparse} textural representation output by the \textbf{fp20} profile.
+
+Microsoft documents DirectX 8 and DirectX 9 vertex and pixel shaders at \textbf{http://msdn.microsoft.com/library}, under "Graphics and Multimedia" in its DirectX SDK documentation.
+
+\end{document}
