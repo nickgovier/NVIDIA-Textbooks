@@ -126,10 +126,11 @@ float displacement = 0.5 * (sin(time) + 1);
 \end{lstlisting}
 \FloatBarrier
 
-\subsection*{Performance Tip}
+\begin{framed}
+Performance Tip
 
 Did you know that the \textbf{sin} function is just as efficient as addition or multiplication in the CineFX architecture? In fact, the \textbf{cos} function, which calculates the cosine function, is equally fast. Take advantage of these features to add visual complexity to your programs without slowing down their execution.
-\hrule
+\end{framed}
 
 \subsection*{Adding Controls to the Program}
 
@@ -191,10 +192,11 @@ The preceding example demonstrates an important point. Take another look at this
 
 If you were to use this equation for the displacement, all the terms would be the same for each vertex, because they all depend only on uniform parameters. This means that you would be computing this displacement on the GPU for \textit{each vertex}, when in fact you could simply calculate the displacement on the CPU just once for the entire mesh and pass the displacement as a uniform parameter. However, when the vertex position is part of the displacement equation, the sine function must be evaluated for each vertex. And as you might expect, if the value of the displacement varies for every vertex like this, such a per-vertex computation can be performed far more efficiently on the GPU than on the CPU.
 
-\subsection*{Coding Tip}
+\begin{framed}
+Coding Tip
 
 If a computed value is a constant value for an entire object, optimize your program by precomputing that value on a per-object basis with the CPU. Then pass the precomputed value to your Cg program as a uniform parameter. This approach is more efficient than recomputing the value for every fragment or vertex processed.
-\hrule
+\end{framed}
 
 \section{6.3 Particle Systems}
 
@@ -244,10 +246,11 @@ Modern GPUs have powerful vector-processing capabilities, particularly for addit
 
 Equation 6-1 is a vector equation because the initial position, initial velocity, constant acceleration, and computed position are all three-component vectors. By implementing the particle system equation as a vector expression when writing the Cg vertex program, you help the compiler translate your program to a form that executes efficiently on your GPU.
 
-\subsection*{Performance Tip}
+\begin{framed}
+Performance Tip
 
 Vectorize your calculations whenever possible, to take full advantage of the GPU's powerful vector-processing capabilities.
-\hrule
+\end{framed}
 
 \subsection{6.3.3 The Particle System Parameters}
 
@@ -630,10 +633,11 @@ An array of 24 bone matrices, each a 3x4 matrix, represents each pose. The entir
 
 The per-vertex \textbf{matrixIndex} input vector provides a set of four bone-matrix indices for accessing the \textbf{boneMatrix} array. The per-vertex \textbf{weight} input vector provides the four weighting factors for each respective bone matrix. The program assumes that the weighting factors for each vertex sum to 100 percent.
 
-\subsection*{Performance Tip}
+\begin{framed}
+Performance Tip
 
 For performance reasons, the program treats \textbf{boneMatrix} as an array of \textbf{float4} vectors rather than an array of \textbf{float3x4} matrices. The \textbf{matrixIndex} array contains floating-point values instead of integers, and so the addressing of a single array of vectors is more efficient than accessing an array of matrices. The implication of this is that the indices in the \textbf{matrixIndex} vector should be three times the actual matrix index. So, the program assumes 0 is the first matrix in the array, 3 is the second matrix, and so on. The indices are fixed for each vertex, so you improve performance by moving this "multiply by 3" outside the vertex program.
-\hrule
+\end{framed}
 
 A \textbf{for} loop, looping four times, transforms the default pose position and normal by each bone matrix. Each result is weighted and summed.
 

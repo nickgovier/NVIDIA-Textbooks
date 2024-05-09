@@ -419,10 +419,11 @@ vec1.xw = vec2;  // Now vec1 = (-2.0, -2.0, 5.0, 4.0)
 
 The write-masking suffix can list the \textbf{x}, \textbf{y}, \textbf{z}, and \textbf{w} (or \textbf{r}, \textbf{g}, \textbf{b}, and \textbf{a}) components in any order. Each letter can appear at most once in a given write-mask suffix, and you cannot mix the \textbf{xyzw} and \textbf{rgba} letters in a single write-mask suffix.
 
-\subsection*{Performance Tip}
+\begin{framed}
+Performance Tip
 
 On most modern GPUs, swizzling and write masking are operations that have no performance penalty. So use both features whenever they help improve the clarity or efficiency of your code.
-\hrule
+\end{framed}
 
 \subsection*{\textit{The Emissive Light Contribution}}
 
@@ -435,10 +436,11 @@ There is nothing much to do for the emissive term. For the sake of coding clarit
 \end{lstlisting}
 \FloatBarrier
 
-\subsection*{Coding Tip}
+\begin{framed}
+Coding Tip
 
 When the Cg compiler translates your program to executable code, it also optimizes the translated code so that there is no performance penalty for creating intermediate variables such as the \textbf{emissive} variable in the above code fragment. Because instancing such variables makes your code more readable, you are encouraged to instance named variables for intermediate results to improve the clarity of your code.
-\hrule
+\end{framed}
 
 \subsection*{\textit{The Ambient Light Contribution}}
 
@@ -727,10 +729,11 @@ To get a more accurate result, you need to evaluate the whole lighting model for
 
 \subsection{5.3.1 Implementing Per-Fragment Lighting}
 
-\subsection*{CineFX}
+\begin{framed}
+CineFX
 
 The fragment program in this example requires a fourth-generation GPU, such as NVIDIA's GeForce FX or ATI's Radeon 9700.
-\hrule
+\end{framed}
 
 In this example, the computational burden on vertex and fragment programs will be swapped; this time, the fragment program will do the interesting work. The vertex program will only help set the stage by passing some parameters over to the fragment program. Many advanced techniques follow this pattern as well, which is probably not very surprising, because fragment programs give you more detailed control over your final image than vertex programs do. Using a vertex or fragment program also has other implications, such as performance. Chapter 10 discusses this topic further.
 
@@ -989,10 +992,11 @@ myArray[index] = float3(0.1, 0.2, 0.3);
 \end{lstlisting}
 \FloatBarrier
 
-\subsection*{Advanced}
+\begin{framed}
+Advanced Topic
 
 An important difference from C is that arrays are first-class types in Cg. This means that array assignments actually copy the entire array, and arrays that are passed as parameters are passed by value (the entire array is copied before making any changes), rather than by reference.
-\hrule
+\end{framed}
 
 You can also pass arrays as parameters to functions. We're going to use this feature to create a function that computes the lighting from two distinct light sources, as shown in Example 5-4.
 

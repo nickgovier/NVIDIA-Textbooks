@@ -103,7 +103,8 @@ The members (\textbf{position} and \textbf{color}) are declared using the \textb
 
 You should rely on the predefined vector data types provided by the Cg Standard Library, such as \textbf{float2}, \textbf{float3}, \textbf{float4}, and other such types to ensure that your programs make the most efficient use of the vector processing capabilities of your programmable GPU.
 
-\subsection*{Advanced}
+\begin{framed}
+Advanced Topic
 
 Vector types in Cg, such as \textbf{float3} and \textbf{float4}, are not 100 percent equivalent to arrays of however many \textbf{float}s. For example, \textbf{float x[4]} is not the same declaration as \textbf{float4 x}. These vector types are, in fact, \textit{packed arrays}. Packed arrays, often just called vectors, tell the compiler to allocate the elements of packed arrays so that vector operations on these variables are most efficient. If two input vectors are stored in packed form, programmable graphics hardware typically performs three-component or four-component math operations—such as multiplications, additions, and dot products—in a single instruction.
 
@@ -125,7 +126,7 @@ scalar = data[index]; // Inefficient or unsupported
 \FloatBarrier
 
 The rule of thumb is to declare all vectors that consist of two, three, or four components (such as colors, positions, texture coordinate sets, and directions) as packed arrays by using Cg's built-in vector types.
-\hrule
+\end{framed}
 
 \subsection{Matrices}
 
@@ -159,7 +160,8 @@ The \textbf{POSITION} semantic (in this case, in an output structure used by a C
 
 The \textbf{COLOR} semantic in this context is what Direct3D calls the "diffuse vertex color" and OpenGL calls the "primary vertex color." Color interpolation for a triangle or other geometric primitive during rasterization depends on the primitive's per-vertex colors.
 
-\subsection*{Caution}
+\begin{framed}
+Caution
 
 Do not confuse a member name with its semantic. In Example 2-1, the \textbf{position} member is associated with the \textbf{POSITION} semantic. However, it is the use of the \textbf{POSITION} semantic after the member name—not the name of the member itself—that makes the rasterizer treat the \textbf{position} member as a position. In the following output structure, the member names \textbf{density} and \textbf{position} are poorly chosen, but Cg abides by the specified semantics despite the misleading names:
 
@@ -171,7 +173,7 @@ struct misleadingButLegal {
 };
 \end{lstlisting}
 \FloatBarrier
-\hrule
+\end{framed}
 
 Subsequent examples will introduce other output semantic names. Not all semantics are available in all profiles, but in our examples, we will use the semantics that are broadly supported by existing profiles.
 
@@ -299,10 +301,11 @@ Your first example is very simple, so there is no problem compiling it with any 
 
 Because you'll want your \textbf{C2E1v_green} example to compile on the broadest range of GPUs, the best profiles for your example are \textbf{arbvp1} for OpenGL and \textbf{vs_1_1} for DirectX 8. Is there any reason to choose another profile? Yes, if you want to use advanced vertex programmability functionality, such as complex flow control or fast hardware instructions, which are not available in the basic profiles. For example, if you choose the \textbf{vp30} profile, you can write a Cg vertex program that loops a varying (nonconstant) number of times.
 
-\subsection*{Coding Tip}
+\begin{framed}
+Coding Tip
 
 If there is a basic profile that is sufficient for compiling your Cg example, use it to gain the broadest hardware support. However, if you choose a more advanced profile, your Cg program may execute more efficiently and you can program using more general programming practices.
-\hrule
+\end{framed}
 
 So what is the disadvantage of a more advanced profile? It may limit your program to newer GPUs. To get the best of both worlds—broad hardware support as well as the latest available hardware—you might provide both a fallback Cg program for basic profiles and a more advanced Cg program for more advanced profiles. The CgFX format simplifies this approach by providing a unified way to encapsulate multiple Cg implementations of a given rendering effect in a single source file. Appendix C explains more about CgFX.
 
@@ -356,10 +359,11 @@ Your 3D application will typically use a collection of Cg programs, not just one
 
 Of course, you can still use the name \textbf{main}, which is the default entry function name for Cg programs if no explicit entry function name is specified when you compile Cg source code.
 
-\subsection*{Coding Tip}
+\begin{framed}
+Coding Tip
 
 To avoid confusion, find descriptive names for your entry functions. If all your entry functions are named \textbf{main}, it will be difficult to have several entry functions in a single Cg source file—even if that is the default entry function name assumed by the runtime.
-\hrule
+\end{framed}
 
 \subsection{Downloading and Configuring Vertex and Fragment Programs}
 
@@ -476,10 +480,11 @@ Cg has a command-line compiler known as \textbf{cgc}, which is short for "Cg com
     \label{fig:2-3}
 \end{figure}
 
-\subsection*{Coding Tip}
+\begin{framed}
+Coding Tip
 
 Cg developers often write a single Cg program that works for both OpenGL and Direct3D, even if they predominantly use one programming interface or the other. However, profile-dependent differences can exist between what is valid in the corresponding profiles for these 3D programming interfaces. So make it your practice to compile your Cg programs twice with \textbf{cgc}: once for the appropriate OpenGL profile, and again for the appropriate Direct3D profile.
-\hrule
+\end{framed}
 
 \section{Rendering with Your Vertex and Fragment Program Examples}
 

@@ -118,10 +118,11 @@ When a Cg program does not include the \textbf{uniform} qualifier to specify a v
 
 \subsection*{What \textbf{uniform} Means in RenderMan vs. Cg}
 
-\subsection*{Caution}
+\begin{framed}
+Caution
 
 The \textbf{uniform} reserved word will be familiar to programmers who have written shaders in RenderMan. However, the meaning of \textbf{uniform} in Cg is different from its meaning in RenderMan.
-\hrule
+\end{framed}
 
 In RenderMan, the \textbf{uniform} storage modifier indicates variables whose values are constant over a shaded surface, whereas \textbf{varying} variables are those whose values can vary over the surface.
 
@@ -402,10 +403,11 @@ Cg provides the \textbf{float}, \textbf{half}, and \textbf{double} floating-poin
 
 The \textbf{half} data type does not exist in C or C++. This new data type introduced by Cg holds a half-precision floating-point value (typically 16-bit) that is more efficient in storage and performance than standard-precision floating-point (typically 32-bit) types.
 
-\subsection*{CineFX}
+\begin{framed}
+CineFX
 
 The NVIDIA CineFX GPU architecture supports half-precision values for fragment programs. The \textbf{half} data type is often appropriate for intermediate values in fragment programs, such as colors and normalized vectors. By using \textbf{half} values when possible rather than \textbf{float}, you speed up the performance of your fragment programs.
-\hrule
+\end{framed}
 
 GPUs, by design, provide data types that represent continuous quantities, such as colors and vectors. GPUs do not (currently) support data types that represent inherently discrete quantities, such as alphanumeric characters and bit masks, because GPUs do not typically operate on this kind of data.
 
@@ -417,15 +419,17 @@ Current GPUs handle floating-point equally well when executing vertex and fragme
 
 Cg must be able to manipulate fixed-point data types to support programmability for GPUs that lack floating-point fragment programmability. This means that certain fragment profiles use fixed-point values. Table 3-3 lists various Cg profiles and describes how they represent various data types. The implication for Cg programmers is that \textbf{float} may not actually mean floating-point in all profiles in all contexts.
 
-\subsection*{Caution}
+\begin{framed}
+Caution
 
 The \textbf{fp20} and \textbf{ps_1_1} profiles treat variables in fragment coloring as fixed-point values in the range [-1, +1]. By fragment coloring, we mean math operations performed after the texture mapping results. If you want true floating-point data types, use the \textbf{arbfp1}, \textbf{fp30}, or \textbf{vp_2_0} profiles, but be aware these are advanced profiles not supported by older GPUs.
-\hrule
+\end{framed}
 
-\subsection*{CineFX}
+\begin{framed}
+CineFX
 
 The CineFX architecture also supports a special high-performance continuous data type called \textbf{fixed} for fragment programs. The \textbf{fixed} data type has a [-2, +2) range (meaning, ranging from negative 2 to not quite positive 2) for the \textbf{fp30} profile. In other profiles, the \textbf{fixed} data type is synonymous with the smallest continuous data type available. Although the Cg compiler (\textbf{cgc}) and runtime support the \textbf{fixed} data type (and vector versions such as \textbf{fixed3} and \textbf{fixed4}), Microsoft's HLSL compiler (\textbf{fxc}) does not.
-\hrule
+\end{framed}
 
 \begin{table}
 \centering
@@ -571,10 +575,11 @@ float myDot(float3 a, float3 b)
 
 This is the same math that the \textbf{dot} function implements. However, the \textbf{dot} function maps to a special GPU instruction, so the dot product provided by the Cg Standard Library is very likely to be faster and more accurate than the \textbf{myDot} routine.
 
-\subsection*{Coding Tip}
+\begin{framed}
+Coding Tip
 
 By using Cg Standard Library functions wherever possible, you guide the Cg compiler to generate the most efficient and precise program for your particular GPU.
-\hrule
+\end{framed}
 
 \subsection{3.3.4 2D Twisting}
 
@@ -649,7 +654,8 @@ void sincos(SCALAR angle, out SCALAR s, out SCALAR c);
 
 When \textbf{sincos} returns, Cg updates the calling parameters \textbf{s} and \textbf{c} with the sine and cosine, respectively, of the \textbf{angle} parameter (assumed to be in radians).
 
-\subsection*{Advanced: Call-by-Result Parameter Passing}
+\begin{framed}
+Advanced Topic: Call-by-Result Parameter Passing
 
 An \textbf{out} qualifier indicates that when the routine returns, Cg must assign the final value of a formal parameter qualified by \textbf{out} to its corresponding caller parameter. Initially, the value of an \textbf{out} parameter is undefined. This convention is known as \textit{call-by-result} (or \textit{copy-out}) parameter passing.
 
@@ -664,6 +670,7 @@ The \textbf{inout} type qualifier (or the \textbf{in} and \textbf{out} type qual
 The \textbf{in} qualifier is optional because if you do not specify an \textbf{in}, \textbf{out}, or \textbf{inout} qualifier, the \textbf{in} qualifier is assumed.
 
 You can use \textbf{out} and \textbf{inout} parameters and still return a conventional return value.
+\end{framed}
 
 \subsection*{Rotating Vertices}
 

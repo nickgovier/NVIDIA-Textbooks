@@ -258,7 +258,8 @@ N = \begin{bmatrix}
 \end{bmatrix}
 $
 
-\subsection*{Advanced Topic}
+\begin{framed}
+Advanced Topic
 
 Recall from Chapter 4 (Section 4.1.3) that the modeling transform converts object-space coordinates to world-space coordinates. In this example, we assume that the modeling transform is \textit{affine} (rather than projective) and uniform in its scaling (rather than nonuniformly scaling \textit{x}, \textit{y}, and \textit{z}). We also assume that the \textit{w} component of \textbf{position} is 1, even \textbf{though} position is defined to be a \textbf{float4} in the prototype for \textbf{C7E1v_reflection}.
 
@@ -281,7 +282,7 @@ If the modeling transform is projective or the \textit{w} component of the objec
 \FloatBarrier
 
 The \textbf{/=} operator is an assignment operator, like the one in C and C++, which in this case divides \textbf{positionW} by \textbf{positionW.w} and then assigns the result to \textbf{positionW}.
-\hrule
+\end{framed}
 
 \subsection*{Normalizing the Normal}
 
@@ -293,10 +294,11 @@ The vertex normal needs to be normalized:
 \end{lstlisting}
 \FloatBarrier
 
-\subsection*{Advanced Topic}
+\begin{framed}
+Advanced Topic
 
 In certain cases, we can skip this \textbf{normalize} function call. If we know that the upper 3x3 portion of the \textbf{modelToWorld} matrix causes no nonuniform scaling \textit{and} the object-space normal parameter is guaranteed to be already normalized, the \textbf{normalize} call is unnecessary.
-\hrule
+\end{framed}
 
 \subsection*{Calculating the Incident Vector}
 
@@ -376,14 +378,15 @@ The \textbf{lerp} function performs linear interpolation, as you have seen befor
 
 \subsection{7.2.4 Control Maps}
 
-\subsection*{Advanced Topic}
+\begin{framed}
+Advanced Topic
 
 In this example, \textbf{reflectivity} is a uniform parameter. The assumption is that each piece of geometry in the scene has the same reflectivity over its entire surface. But this doesn't necessarily have to be the case! You can create more interesting effects by encoding reflectivity in a texture. This approach allows you to vary the amount of reflectivity at each fragment, which makes it easy to create objects with both reflective and nonreflective parts.
 
 Because the idea of using a texture to control shading parameters is so powerful, we call such a texture a \textit{control map}. Control maps are especially important because they leverage the GPU's efficient texture manipulation capabilities. In addition, control maps give artists increased control over effects without having to have a deep understanding of the underlying programs. For example, an artist could paint a "reflectivity map" without understanding how environment mapping works.
 
 Control maps are an excellent way to add detail and complexity to almost any program.
-\hrule
+\end{framed}
 
 \subsection{7.2.5 Vertex Program vs. Fragment Program}
 
@@ -545,10 +548,11 @@ void  C7E3v_refraction(float4  position : POSITION,
 \end{lstlisting}
 \FloatBarrier
 
-\subsection*{Caution}
+\begin{framed}
+Caution
 
 When light passes from a dense medium to a less dense medium, the light can refract so much that total internal reflection occurs. For example, if you are under water in a pool and the surface of the water is smooth enough, the surface of the water will look like a mirror when viewed at a glancing angle. In this case, \textbf{cosT2} is less than or equal to zero and the \textbf{refract} routine returns a zero vector.
-\hrule
+\end{framed}
 
 The key difference between the earlier \textbf{C7E1v_reflection} example and the \textbf{C7E3v_refraction} example is the use of the \textbf{refract} function (rather than the \textbf{reflect} function) to calculate the refracted vector \textbf{T}. 
 
